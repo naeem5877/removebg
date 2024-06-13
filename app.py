@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, send_file
+from flask import Flask, render_template, request, send_file, redirect, url_for
 from rembg import remove
 from PIL import Image
 import io
@@ -18,7 +18,7 @@ def upload_file():
     if file.filename == '':
         return redirect(url_for('index'))
 
-    if file:
+    try:
         input_image = Image.open(io.BytesIO(file.read()))
         output_image = remove(input_image)
 
@@ -27,6 +27,10 @@ def upload_file():
         output_io.seek(0)
 
         return send_file(output_io, mimetype='image/png', as_attachment=True, download_name='output.png')
+    
+    except Exception as e:
+        print(f"Error processing image: {e}")
+        return redirect(url_for('index'))
 
 if __name__ == '__main__':
     app.run(debug=True)
