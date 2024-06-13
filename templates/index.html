@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Background Remover</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f0f0f0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            max-width: 400px;
+            width: 100%;
+        }
+        h1 {
+            color: #333;
+        }
+        input[type="file"] {
+            display: none;
+        }
+        .custom-file-upload {
+            border: 2px solid #007BFF;
+            color: #007BFF;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-block;
+        }
+        .custom-file-upload:hover {
+            background-color: #007BFF;
+            color: white;
+        }
+        .loader {
+            display: none;
+            border: 4px solid #f3f3f3; /* Light grey */
+            border-top: 4px solid #3498db; /* Blue */
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Remove Background from Image</h1>
+        <form id="uploadForm" action="/upload" method="post" enctype="multipart/form-data" onsubmit="showLoader()">
+            <label for="file-upload" class="custom-file-upload">
+                Choose File
+            </label>
+            <input id="file-upload" type="file" name="file" accept="image/*" required onchange="submitForm()">
+            <br>
+            <div class="loader" id="loader"></div>
+        </form>
+    </div>
+
+    <script>
+        function submitForm() {
+            document.getElementById("uploadForm").submit();
+            showLoader();
+        }
+
+        function showLoader() {
+            document.getElementById("loader").style.display = "block";
+        }
+    </script>
+</body>
+</html>
