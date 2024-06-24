@@ -1,3 +1,4 @@
 flask
 rembg
 gunicorn
+numpy<2.0.0
