@@ -1,36 +1,28 @@
-from flask import Flask, render_template, request, send_file, redirect, url_for
+from flask import Flask, request, send_file
 from rembg import remove
-from PIL import Image
-import io
+from io import BytesIO
 
 app = Flask(__name__)
 
-@app.route('/')
-def index():
-    return render_template('index.html')
+@app.route('/remove-background', methods=['POST'])
+def remove_background():
+    if 'image' not in request.files:
+        return {"error": "No image file provided"}, 400
 
-@app.route('/upload', methods=['POST'])
-def upload_file():
-    if 'file' not in request.files:
-        return redirect(url_for('index'))
-
-    file = request.files['file']
+    file = request.files['image']
     if file.filename == '':
-        return redirect(url_for('index'))
+        return {"error": "No selected file"}, 400
 
     try:
-        input_image = Image.open(io.BytesIO(file.read()))
+        input_image = file.read()
         output_image = remove(input_image)
 
-        output_io = io.BytesIO()
-        output_image.save(output_io, format='PNG')
-        output_io.seek(0)
+        output = BytesIO(output_image)
+        output.seek(0)
 
-        return send_file(output_io, mimetype='image/png', as_attachment=True, download_name='output.png')
-    
+        return send_file(output, mimetype='image/png')
     except Exception as e:
-        print(f"Error processing image: {e}")
-        return redirect(url_for('index'))
+        return {"error": str(e)}, 500
 
 if __name__ == '__main__':
     app.run(debug=True)
